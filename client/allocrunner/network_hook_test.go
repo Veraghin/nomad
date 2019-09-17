@@ -14,7 +14,7 @@ import (
 
 // statically assert network hook implements the expected interfaces
 var _ interfaces.RunnerPrerunHook = (*networkHook)(nil)
-var _ interfaces.RunnerPostrunHook = (*networkHook)(nil)
+var _ interfaces.RunnerDestroyHook = (*networkHook)(nil)
 
 type mockNetworkIsolationSetter struct {
 	t            *testing.T
@@ -29,7 +29,7 @@ func (m *mockNetworkIsolationSetter) SetNetworkIsolation(spec *drivers.NetworkIs
 
 // Test that the prerun and postrun hooks call the setter with the expected spec when
 // the network mode is not host
-func TestNetworkHook_Prerun_Postrun(t *testing.T) {
+func TestNetworkHook_Prerun_Destroy(t *testing.T) {
 	alloc := mock.Alloc()
 	alloc.Job.TaskGroups[0].Networks = []*structs.NetworkResource{
 		{
@@ -69,7 +69,7 @@ func TestNetworkHook_Prerun_Postrun(t *testing.T) {
 	require.NoError(hook.Prerun())
 	require.True(setter.called)
 	require.False(destroyCalled)
-	require.NoError(hook.Postrun())
+	require.NoError(hook.Destroy())
 	require.True(destroyCalled)
 
 	// reset and use host network mode
@@ -80,7 +80,7 @@ func TestNetworkHook_Prerun_Postrun(t *testing.T) {
 	require.NoError(hook.Prerun())
 	require.False(setter.called)
 	require.False(destroyCalled)
-	require.NoError(hook.Postrun())
+	require.NoError(hook.Destroy())
 	require.False(destroyCalled)
 
 }

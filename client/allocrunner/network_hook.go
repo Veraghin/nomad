@@ -77,7 +77,7 @@ func (h *networkHook) Prerun() error {
 	return nil
 }
 
-func (h *networkHook) Postrun() error {
+func (h *networkHook) Destroy() error {
 	if h.spec == nil {
 		return nil
 	}

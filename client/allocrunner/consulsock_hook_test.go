@@ -20,10 +20,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TestConsulSockHook_PrerunPostrun_Ok asserts that a proxy is started when the
+// TestConsulSockHook_PrerunDestroy_Ok asserts that a proxy is started when the
 // Consul unix socket hook's Prerun method is called and stopped with the
-// Postrun method is called.
-func TestConsulSockHook_PrerunPostrun_Ok(t *testing.T) {
+// Destroy method is called.
+func TestConsulSockHook_PrerunDestroy_Ok(t *testing.T) {
 	t.Parallel()
 
 	// As of Consul 1.6.0 the test server does not support the gRPC
@@ -82,7 +82,7 @@ func TestConsulSockHook_PrerunPostrun_Ok(t *testing.T) {
 	require.Equal(t, input, output)
 
 	// Stop the unix socket proxy
-	require.NoError(t, h.Postrun())
+	require.NoError(t, h.Destroy())
 
 	// Consul reads should error
 	n, err := consulConn.Read(output)
@@ -120,8 +120,8 @@ func TestConsulSockHook_Prerun_Error(t *testing.T) {
 		h := newConsulSockHook(logger, alloc, allocDir, consulConfig)
 		require.NoError(t, h.Prerun())
 
-		// Postrun should be a noop
-		require.NoError(t, h.Postrun())
+		// Destroy should be a noop
+		require.NoError(t, h.Destroy())
 	}
 
 	{
@@ -130,8 +130,8 @@ func TestConsulSockHook_Prerun_Error(t *testing.T) {
 		h := newConsulSockHook(logger, connectAlloc, allocDir, consulConfig)
 		require.Error(t, h.Prerun())
 
-		// Postrun should be a noop
-		require.NoError(t, h.Postrun())
+		// Destroy should be a noop
+		require.NoError(t, h.Destroy())
 	}
 
 	{
@@ -145,8 +145,8 @@ func TestConsulSockHook_Prerun_Error(t *testing.T) {
 		}
 		require.Error(t, h.Update(req))
 
-		// Postrun should be a noop
-		require.NoError(t, h.Postrun())
+		// Destroy should be a noop
+		require.NoError(t, h.Destroy())
 	}
 }
 

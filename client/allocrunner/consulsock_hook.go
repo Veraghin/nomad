@@ -86,7 +86,7 @@ func (h *consulSockHook) Update(req *interfaces.RunnerUpdateRequest) error {
 	return h.proxy.run(h.alloc)
 }
 
-func (h *consulSockHook) Postrun() error {
+func (h *consulSockHook) Destroy() error {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
